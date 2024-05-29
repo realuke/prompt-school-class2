@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CPS 테스트</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin-top: 50px;
+    }
+    .button-container {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    .button-container button {
+        padding: 20px 40px;
+        font-size: 24px;
+        margin: 10px;
+    }
+    #결과 {
+        font-size: 36px;
+        margin-top: 100px;
+    }
+</style>
+</head>
+<body>
+
+<h1>CPS 테스트</h1>
+<p>버튼을 빠르게 클릭하세요!</p>
+
+<div class="button-container">
+    <button id="시작버튼" onclick="startTest()">테스트 시작</button>
+    <button id="클릭버튼" style="display: none;" onclick="countClicks()">클릭!</button>
+</div>
+
+<p id="남은시간"></p>
+<p>클릭 수: <span id="클릭횟수">0</span></p>
+<p id="결과"></p>
+
+<script>
+    let 클릭횟수 = 0;
+    let 시작시간 = 0;
+    let 타이머;
+
+    function startTest() {
+        클릭횟수 = 0;
+        시작시간 = Date.now();
+        updateTimer();
+        document.getElementById("시작버튼").style.display = "none";
+        document.getElementById("클릭버튼").style.display = "block";
+        document.getElementById("클릭버튼").disabled = false;
+        타이머 = setTimeout(endTest, 5000);
+    }
+
+    function updateTimer() {
+        let 남은시간 = 5 - Math.floor((Date.now() - 시작시간) / 1000);
+        document.getElementById("남은시간").textContent = "남은 시간: " + 남은시간 + " 초";
+        if (남은시간 > 0) {
+            setTimeout(updateTimer, 1000);
+        } else {
+            endTest();
+        }
+    }
+
+    function countClicks() {
+        클릭횟수++;
+        document.getElementById("클릭횟수").textContent = 클릭횟수;
+    }
+
+    function endTest() {
+        clearTimeout(타이머);
+        let 결과 = document.getElementById("결과");
+        let cps = 클릭횟수 / 5;
+        결과.textContent = "초당 클릭 수: " + cps.toFixed(2);
+
+        // 유머 있는 메시지 추가
+        let 유머메시지 = "";
+        if (cps >= 20) {
+            유머메시지 = "이런! 마우스가 타격을 받는 소리가 들렸어요!";
+        } else if (cps >= 15) {
+            유머메시지 = "와우! 마우스는 당신의 손바닥에서 황금으로 만들어질 거예요!";
+        } else if (cps >= 10) {
+            유머메시지 = "놀라운 클릭 속도! 당신은 클릭의 마스터!";
+        } else if (cps >= 5) {
+            유머메시지 = "클릭력이 꽤 괜찮아요! 계속 열심히 클릭하세요!";
+        } else {
+            유머메시지 = "다음에는 더 빠르게 클릭해봐요! 훈련이 필요할 것 같아요.";
+        }
+
+        결과.textContent += " " + 유머메시지;
+
+        결과.style.fontSize = "36px";
+        결과.style.marginTop = "100px";
+
+        document.getElementById("클릭버튼").style.display = "none";
+        document.getElementById("시작버튼").style.display = "block";
+        document.getElementById("시작버튼").textContent = "다시 시도";
+        document.getElementById("시작버튼").onclick = startTest;
+    }
+</script>
+
+</body>
+</html>
